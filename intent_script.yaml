@@ -1,0 +1,198 @@
+intent_script:
+  lightsTurnOff:
+    speech:
+      text: >
+        {% set ack = ["OK", "Compris", "Bien", "Très bien", "C'est compris", "C'est fait", "Parfait"] %}
+        {{ ack | random }}
+    action:
+      - service: light.turn_off
+        data_template:
+          entity_id: >
+            {% set hr = house_room | replace(" ","_") %}
+            {% if ('bureau' in hr) %}
+              light.bureau
+            {%- elif ('salon' in hr) %}
+              light.suspension_salon_level
+            {%- elif ('manger' in hr) %}
+              light.luminaire_salle_a_manger_level
+            {%- elif ('entrée' in hr) %}
+              light.plafonnier_entree_level
+            {%- elif ('living' in hr) %}
+              light.lampadaire_salle_a_manger
+            {%- elif ('cheminée' in hr) %}
+              light.cheminee
+            {% endif %}
+  lightsTurnOn:
+    speech:
+      text: >
+        {% set ack = ["OK", "Compris", "Bien", "Très bien", "C'est compris", "C'est fait", "Parfait"] %}
+        {{ ack | random }}
+    action:
+      - service: light.turn_on
+        data_template:
+          entity_id: >
+            {% set hr = house_room | replace(" ","_") %}
+            {%- if ('bureau' in hr) %}
+            light.bureau
+            {%- endif %}
+            {%- if ('salon' in hr) %}
+            light.suspension_salon_level
+            {%- endif %}
+            {%- if ('manger' in hr) %}
+            light.luminaire_salle_a_manger_level
+            {%- endif %}
+            {%- if ('entrée' in hr) %}
+            light.plafonnier_entree_level
+            {%- endif %}
+            {% if ('living' in hr) %}
+            light.lampadaire_salle_a_manger
+            {%- endif %}
+            {% if ('cheminée' in hr) %}
+            light.cheminee
+            {%- endif %}
+  lightsTurnOnSet:
+    speech:
+      text: >
+        {% set ack = ["OK", "Compris", "Bien", "Très bien", "C'est compris", "C'est fait", "Parfait"] %}
+        {{ ack | random }}
+    action:
+      - service: light.turn_on
+        data_template:
+          entity_id: >
+            {% set hr = house_room | replace(" ","_") %}
+            {%- if ('bureau' in hr) %}
+            light.bureau
+            {%- endif %}
+            {%- if ('salon' in hr) %}
+            light.suspension_salon_level
+            {%- endif %}
+            {%- if ('manger' in hr) %}
+            light.luminaire_salle_a_manger_level
+            {%- endif %}
+            {%- if ('entrée' in hr) %}
+            light.plafonnier_entree_level
+            {%- endif %}
+            {% if ('living' in hr) %}
+            light.lampadaire_salle_a_manger
+            {%- endif %}
+            {% if ('cheminée' in hr) %}
+            light.cheminee
+            {%- endif %}
+  GetTime:
+    speech:
+      text: Il est actuellement {{ now().strftime('%H:%M:%S') }}
+  SetTimer:
+    speech:
+      text: "Compris, j'ai lancé une minuterie de {{ slots.timer_duration.value.hours}}:{{ slots.timer_duration.value.minutes}}:{{slots.timer_duration.value.seconds }}"
+    action:
+      - service: timer.start
+        entity_id: timer.minuteur
+        data_template:
+          duration: "{{ timer_duration }}"
+  CancelTimer:
+    speech:
+      text: "Compris, minuterie annulée"
+    action:
+      - service: timer.cancel
+        entity_id: timer.minuteur
+
+  BlindClose:
+    speech:
+      text: >
+        {% set ack = ["OK", "Compris", "Bien", "Très bien", "C'est compris", "C'est fait", "Parfait"] %}
+        {{ ack | random }}
+    action:
+      - service: cover.close_cover
+        data_template:
+          entity_id: >
+            {% set hr = house_room | replace(" ","_") %}
+            {% set rd = room_details | replace(" ","_") %}
+            {% if ('bureau' in hr) %}
+              cover.volet_bureau
+            {%- elif ('buanderie' in hr) %}
+              cover.volet_buanderie
+            {%- elif ('aurélie' in hr) %}
+              cover.volet_ch_aurelie
+            {%- elif ('auriane' in hr) %}
+              cover.volet_ch_auriane
+            {%- elif ('étage' in hr) %}
+              group.volets_etage
+            {%- elif ('parents' in hr ) %}
+              {%- if rd %}
+                cover.volet_ch_parents_{{ rd }}
+              {%- else %}
+                group.volets_rdc_nuit
+              {%- endif %}
+            {%- elif ('cuisine' in hr ) %}
+              {%- if ('porte' in rd) %}
+                cover.volet_cuisine_pf
+              {%- elif ('fenêtre' in rd) %}
+                cover.volet_cuisine_fenetre
+              {%- else %}
+                group.volets_cuisine_bureau
+              {%- endif %}
+            {% endif %}
+  BlindOpen:
+    speech:
+      text: >
+        {% set ack = ["OK", "Compris", "Bien", "Très bien", "C'est compris", "C'est fait", "Parfait"] %}
+        {{ ack | random }}
+    action:
+      - service: cover.open_cover
+        data_template:
+          entity_id: >
+            {% set hr = house_room | replace(" ","_") %}
+            {% set rd = room_details | replace(" ","_") %}
+            {% if ('bureau' in hr) %}
+              cover.volet_bureau
+            {%- elif ('buanderie' in hr) %}
+              cover.volet_buanderie
+            {%- elif ('aurélie' in hr) %}
+              cover.volet_ch_aurelie
+            {%- elif ('auriane' in hr) %}
+              cover.volet_ch_auriane
+            {%- elif ('étage' in hr) %}
+              group.volets_etage
+            {%- elif ('parents' in hr ) %}
+              {%- if rd %}
+                cover.volet_ch_parents_{{ rd }}
+              {%- else %}
+                group.volets_rdc_nuit
+              {%- endif %}
+            {%- elif ('cuisine' in hr ) %}
+              {%- if ('porte' in rd) %}
+                cover.volet_cuisine_pf
+              {%- elif ('fenêtre' in rd) %}
+                cover.volet_cuisine_fenetre
+              {%- else %}
+                group.volets_cuisine_bureau
+              {%- endif %}
+            {% endif %}
+  GoodNight:
+    speech:
+      text: >
+        {{ ["OK", "Compris", "Bien", "Très bien", "C'est compris", "Parfait"] | random }}, j'éteins toutes les lumières.
+    action:
+      - service: light.turn_on
+        entity_id: light.suspension_salon_level
+      - service: light.turn_off
+        entity_id:
+          - light.luminaire_salle_a_manger_level
+          - light.plafonnier_entree_level
+          - group.night_lights
+      - service: media_player.kodi_call_method
+        data:
+          entity_id: media_player.kodi
+          method: Addons.ExecuteAddon
+          addonid: script.json-cec
+          params:
+            command: standby
+      - delay: 00:00:10
+      - service: light.turn_off
+        entity_id: light.suspension_salon_level
+  TVTime:
+    speech:
+      text: >
+        {{ ["OK", "Compris", "Bien", "Très bien", "C'est compris", "Parfait"] | random }}
+    action:
+      - service: script.tv_time
